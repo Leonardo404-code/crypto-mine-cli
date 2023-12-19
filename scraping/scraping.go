@@ -3,12 +3,40 @@ package scraping
 import (
 	"encoding/csv"
 	"log"
+	"os"
 
 	"github.com/gocolly/colly"
 )
 
-func Scraping(writer *csv.Writer) {
-	writer.Write([]string{"Name", "Symbol", "Market capacity (USD)", "Price (USD)", "Volume (USD)", "Change (1h)", "Change (24h)", "Change (7d)"})
+func InitScraping() {
+	file, err := os.Create(FileName)
+	if err != nil {
+		log.Fatalf("Cannot create file %q: %s\n", FileName, err)
+		return
+	}
+
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+
+	defer writer.Flush()
+
+	scraping(writer)
+}
+
+func scraping(writer *csv.Writer) {
+	writer.Write(
+		[]string{
+			"Name",
+			"Symbol",
+			"Market capacity (USD)",
+			"Price (USD)",
+			"Volume (USD)",
+			"Change (1h)",
+			"Change (24h)",
+			"Change (7d)",
+		},
+	)
 
 	c := colly.NewCollector()
 

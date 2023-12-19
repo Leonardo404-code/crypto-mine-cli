@@ -10,13 +10,13 @@ Crypto Web Scraping is an application that extracts the data of various cryptocu
 
 - **Download the project dependencies**
 
-```bash
+```go
 go mod tidy
 go mod vendor
 ```
 
 - **Execute the project**
 
-```bash
-go run main.go
+```go
+go run cmd/main.go
 ```
