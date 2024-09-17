@@ -1,38 +1,33 @@
-package scrape
+package saveResults
 
 import (
 	"fmt"
 	"log"
 
-	"crypto-mine-cli/pkg/saveResults"
-
 	"github.com/gocolly/colly"
-	goPretty "github.com/jedib0t/go-pretty/v6/table"
 )
 
-func configGoPretty() goPretty.Writer {
-	tw := goPretty.NewWriter()
-	tw.AppendHeader(goPretty.Row{
-		"Name",
-		"Symbol",
-		"Market capacity (USD)",
-		"Price (USD)",
-		"Volume (USD)",
-		"Change (1h)",
-		"Change (24h)",
-		"Change (7d)",
-	})
-
-	return tw
-}
-
-func Scrape(saveResult bool) {
-	if saveResult {
-		saveResults.SaveInFile()
-		log.Println("File saved in Downloads folder!")
+func SaveInFile() {
+	file, writer, err := createCSVFile()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	goPrettyTable := configGoPretty()
+	defer file.Close()
+	defer writer.Flush()
+
+	writer.Write(
+		[]string{
+			"Name",
+			"Symbol",
+			"Market capacity (USD)",
+			"Price (USD)",
+			"Volume (USD)",
+			"Change (1h)",
+			"Change (24h)",
+			"Change (7d)",
+		},
+	)
 
 	c := colly.NewCollector()
 
@@ -46,11 +41,16 @@ func Scrape(saveResult bool) {
 		change24h := h.ChildText(fmt.Sprintf("%s__percent-change-24-h", ClassCell))
 		change7d := h.ChildText(fmt.Sprintf("%s__percent-change-7-d", ClassCell))
 
-		if name != "" {
-			goPrettyTable.AppendRows([]goPretty.Row{
-				{name, symbol, marketCap, price, volume, change1h, change24h, change7d},
-			})
-		}
+		writer.Write([]string{
+			name,
+			symbol,
+			marketCap,
+			price,
+			volume,
+			change1h,
+			change24h,
+			change7d,
+		})
 	})
 
 	c.OnError(func(_ *colly.Response, err error) {
@@ -58,6 +58,4 @@ func Scrape(saveResult bool) {
 	})
 
 	c.Visit(CoinMarketURL)
-
-	fmt.Println(goPrettyTable.Render())
 }

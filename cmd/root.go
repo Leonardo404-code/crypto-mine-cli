@@ -17,7 +17,7 @@ var rootCmd = &cobra.Command{
 data of various cryptocurrencies from the Coin Market Cap
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		scrape.Scrape()
+		scrape.Scrape(SaveResults)
 	},
 }
 
