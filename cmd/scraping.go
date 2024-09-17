@@ -12,6 +12,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var SaveResults bool
+
 var scrapeCmd = &cobra.Command{
 	Use:   "scrape",
 	Short: "Scrape collects cryptocurrency data on the coin market cape website",
@@ -45,13 +47,13 @@ func Scrape() {
 
 	c.OnHTML("tbody tr", func(h *colly.HTMLElement) {
 		name := h.ChildText(".cmc-table__column-name--name")
-		symbol := h.ChildText(".cmc-table__cell--sort-by__symbol")
-		marketCap := h.ChildText(".cmc-table__cell--sort-by__market-cap")
-		price := h.ChildText(".cmc-table__cell--sort-by__price")
-		volume := h.ChildText(".cmc-table__cell--sort-by__volume-24-h")
-		change1h := h.ChildText(".cmc-table__cell--sort-by__percent-change-1-h")
-		change24h := h.ChildText(".cmc-table__cell--sort-by__percent-change-24-h")
-		change7d := h.ChildText(".cmc-table__cell--sort-by__percent-change-7-d")
+		symbol := h.ChildText(fmt.Sprintf("%s__symbol", ClassText))
+		marketCap := h.ChildText(fmt.Sprintf("%s__market-cap", ClassText))
+		price := h.ChildText(fmt.Sprintf("%s__price", ClassText))
+		volume := h.ChildText(fmt.Sprintf("%s__volume-24-h", ClassText))
+		change1h := h.ChildText(fmt.Sprintf("%s__percent-change-1-h", ClassText))
+		change24h := h.ChildText(fmt.Sprintf("%s__percent-change-24-h", ClassText))
+		change7d := h.ChildText(fmt.Sprintf("%s__percent-change-7-d", ClassText))
 
 		if name != "" {
 			goPrettyTable.AppendRows([]goPretty.Row{
@@ -64,7 +66,7 @@ func Scrape() {
 		log.Fatalf("Something went wrong: %v", err)
 	})
 
-	c.Visit("https://coinmarketcap.com/all/views/all/")
+	c.Visit(CoinMarketURL)
 
 	fmt.Println(goPrettyTable.Render())
 }
