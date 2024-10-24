@@ -34,7 +34,7 @@ By adding the ```--save``` you can save the results in a CSV file in your system
 ```go
 go run main.go --save
 ```
-
+or
 ```go
 go run main.go -s
 ```
