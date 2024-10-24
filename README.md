@@ -1,5 +1,7 @@
 # Crypto Mine CLI
 
+![banner](docs/images/banner.png)
+
 Crypto Mine CLI is an application that extracts the data of various cryptocurrencies from the [Coin Market Cap](https://coinmarketcap.com/) and persists it in a CSV file in Donwloads Folder
 
 ## Requirements
@@ -34,7 +36,7 @@ By adding the ```--save``` you can save the results in a CSV file in your system
 ```go
 go run main.go --save
 ```
-or
+
 ```go
 go run main.go -s
 ```
