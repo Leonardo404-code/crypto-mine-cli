@@ -32,7 +32,11 @@ The following message should appear in the terminal:
 By adding the ```--save``` you can save the results in a CSV file in your system's Downloads folder (You can also use ```-s```)
 
 ```go
-go run cmd/main.go --save
+go run main.go --save
+```
+
+```go
+go run main.go -s
 ```
 
 The following message should appear in the terminal with a additional log:
