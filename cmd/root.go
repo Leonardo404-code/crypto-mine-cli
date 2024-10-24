@@ -24,7 +24,7 @@ data of various cryptocurrencies from the Coin Market Cap
 func init() {
 	rootCmd.Flags().BoolVarP(
 		&SaveResults,
-		"save-result",
+		"save",
 		"s",
 		false,
 		"Save result stores the results in a CSV file in the Downloads folder",
