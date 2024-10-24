@@ -10,6 +10,8 @@ Crypto Mine CLI is an application that extracts the data of various cryptocurren
 
 #### Download the project dependencies
 
+In root folder execute:
+
 ```go
 go mod tidy
 go mod vendor
@@ -17,8 +19,10 @@ go mod vendor
 
 #### Execute the project
 
+In root folder execute:
+
 ```go
-go run cmd/main.go
+go run main.go
 ```
 
 The following message should appear in the terminal:
