@@ -8,7 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var SaveResults bool
+var (
+	saveResults  bool
+	symbolFilter []string
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "crypto-mine",
@@ -17,17 +20,25 @@ var rootCmd = &cobra.Command{
 data of various cryptocurrencies from the Coin Market Cap
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		scrape.Scrape(SaveResults)
+		scrape.Scrape(saveResults, symbolFilter)
 	},
 }
 
 func init() {
 	rootCmd.Flags().BoolVarP(
-		&SaveResults,
+		&saveResults,
 		"save",
 		"s",
 		false,
 		"Save result stores the results in a CSV file in the Downloads folder",
+	)
+
+	rootCmd.Flags().StringArrayVarP(
+		&symbolFilter,
+		"filter",
+		"f",
+		[]string{},
+		"Filter Crypto by symbol",
 	)
 }
 

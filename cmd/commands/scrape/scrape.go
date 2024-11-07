@@ -3,6 +3,7 @@ package scrape
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"crypto-mine-cli/cmd/commands/saveResults"
 	"crypto-mine-cli/config"
@@ -11,7 +12,7 @@ import (
 	goPretty "github.com/jedib0t/go-pretty/v6/table"
 )
 
-func Scrape(saveResult bool) {
+func Scrape(saveResult bool, symbolFilter []string) {
 	if saveResult {
 		saveResults.SaveInFile()
 		log.Println("File saved in Downloads folder!")
@@ -30,6 +31,26 @@ func Scrape(saveResult bool) {
 		change1h := h.ChildText(fmt.Sprintf("%s__percent-change-1-h", ClassCell))
 		change24h := h.ChildText(fmt.Sprintf("%s__percent-change-24-h", ClassCell))
 		change7d := h.ChildText(fmt.Sprintf("%s__percent-change-7-d", ClassCell))
+
+		if len(symbolFilter) > 0 {
+			for _, symbolValue := range symbolFilter {
+				if symbolValue == strings.ToLower(symbol) {
+					goPrettyTable.AppendRows([]goPretty.Row{
+						{
+							name,
+							symbol,
+							marketCap,
+							price,
+							volume,
+							change1h,
+							change24h,
+							change7d,
+						},
+					})
+				}
+			}
+			return
+		}
 
 		if name != "" {
 			goPrettyTable.AppendRows([]goPretty.Row{

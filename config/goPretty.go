@@ -6,6 +6,7 @@ import (
 
 func ConfigGoPretty() goPretty.Writer {
 	tw := goPretty.NewWriter()
+	tw.SetTitle("Crypto Mine CLI")
 	tw.AppendHeader(goPretty.Row{
 		"Name",
 		"Symbol",
