@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"crypto-mine-cli/pkg/scrape"
+	"crypto-mine-cli/cmd/commands/scrape"
 
 	"github.com/spf13/cobra"
 )
