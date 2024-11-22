@@ -11,6 +11,7 @@ import (
 var (
 	saveResults  bool
 	symbolFilter []string
+	fileType     string
 )
 
 var rootCmd = &cobra.Command{
@@ -20,7 +21,7 @@ var rootCmd = &cobra.Command{
 data of various cryptocurrencies from the Coin Market Cap
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		scrape.Scrape(saveResults, symbolFilter)
+		scrape.Scrape(saveResults, symbolFilter, fileType)
 	},
 }
 
@@ -40,6 +41,13 @@ func init() {
 		[]string{},
 		"Filter Crypto by symbol",
 	)
+
+	rootCmd.Flags().StringVarP(
+		&fileType,
+		"type",
+		"t",
+		"csv",
+		"Determine the type of file that will be created to persist the cryptocurrency data, a CSV or JSON file.")
 }
 
 func Execute() {
