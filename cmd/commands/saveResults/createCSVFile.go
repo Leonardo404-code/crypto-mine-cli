@@ -13,11 +13,11 @@ func createCSVFile() (*os.File, *csv.Writer, error) {
 		return nil, nil, err
 	}
 
-	filePath := filepath.Join(downloadFolderPath, FileName)
+	filePath := filepath.Join(downloadFolderPath, CSVFileName)
 
 	file, err := os.Create(filePath)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Cannot create file %q: %s\n", FileName, err)
+		return nil, nil, fmt.Errorf("Cannot create file %q: %s\n", CSVFileName, err)
 	}
 
 	writer := csv.NewWriter(file)

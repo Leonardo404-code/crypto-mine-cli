@@ -12,10 +12,21 @@ import (
 	goPretty "github.com/jedib0t/go-pretty/v6/table"
 )
 
-func Scrape(saveResult bool, symbolFilter []string) {
+func Scrape(saveResult bool, symbolFilter []string, fileType string) {
 	if saveResult {
-		saveResults.SaveInFile()
-		log.Println("File saved in Downloads folder!")
+		if fileType != "json" && fileType != "csv" {
+			log.Println("error: file type not supported, try json or csv")
+		}
+
+		if fileType == "json" {
+			saveResults.SaveInJSON()
+		}
+
+		if fileType == "csv" {
+			saveResults.SaveInCSV()
+		}
+
+		log.Printf("File persisted in the Downloads folder in %s format", fileType)
 	}
 
 	goPrettyTable := config.ConfigGoPretty()
