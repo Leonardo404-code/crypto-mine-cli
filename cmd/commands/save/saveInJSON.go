@@ -2,8 +2,9 @@ package save
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
+
+	"crypto-mine-cli/cmd/commands"
 
 	"github.com/gocolly/colly"
 )
@@ -32,25 +33,18 @@ func saveInJSON() {
 	data := []Data{}
 
 	c.OnHTML("tbody tr", func(h *colly.HTMLElement) {
-		name := h.ChildText(fmt.Sprintf("%s--name", ClassColumn))
-		symbol := h.ChildText(fmt.Sprintf("%s__symbol", ClassCell))
-		marketCap := h.ChildText(fmt.Sprintf("%s__market-cap", ClassCell))
-		price := h.ChildText(fmt.Sprintf("%s__price", ClassCell))
-		volume := h.ChildText(fmt.Sprintf("%s__volume-24-h", ClassCell))
-		change1h := h.ChildText(fmt.Sprintf("%s__percent-change-1-h", ClassCell))
-		change24h := h.ChildText(fmt.Sprintf("%s__percent-change-24-h", ClassCell))
-		change7d := h.ChildText(fmt.Sprintf("%s__percent-change-7-d", ClassCell))
+		metrics := commands.GetMetrics(h)
 
-		if name != "" {
+		if metrics.Name != "" {
 			d := Data{
-				Name:      name,
-				Symbol:    symbol,
-				MarketCap: marketCap,
-				Price:     price,
-				Volume:    volume,
-				Change1h:  change1h,
-				Change24h: change24h,
-				Change7d:  change7d,
+				Name:      metrics.Name,
+				Symbol:    metrics.Symbol,
+				MarketCap: metrics.MarketCap,
+				Price:     metrics.Price,
+				Volume:    metrics.Volume,
+				Change1h:  metrics.Change1h,
+				Change24h: metrics.Change24h,
+				Change7d:  metrics.Change7d,
 			}
 
 			data = append(data, d)
@@ -61,7 +55,7 @@ func saveInJSON() {
 		log.Fatalf("Something went wrong: %v", err)
 	})
 
-	c.Visit(CoinMarketURL)
+	c.Visit(commands.CoinMarketURL)
 
 	fileCreated, _ := json.MarshalIndent(data, "", " ")
 

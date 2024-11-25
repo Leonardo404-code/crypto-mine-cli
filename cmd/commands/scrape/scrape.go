@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	"crypto-mine-cli/cmd/commands"
 	"crypto-mine-cli/config"
 
 	"github.com/gocolly/colly"
@@ -17,28 +18,21 @@ func Scrape(symbolFilter []string) {
 	c := colly.NewCollector()
 
 	c.OnHTML("tbody tr", func(h *colly.HTMLElement) {
-		name := h.ChildText(fmt.Sprintf("%s--name", ClassColumn))
-		symbol := h.ChildText(fmt.Sprintf("%s__symbol", ClassCell))
-		marketCap := h.ChildText(fmt.Sprintf("%s__market-cap", ClassCell))
-		price := h.ChildText(fmt.Sprintf("%s__price", ClassCell))
-		volume := h.ChildText(fmt.Sprintf("%s__volume-24-h", ClassCell))
-		change1h := h.ChildText(fmt.Sprintf("%s__percent-change-1-h", ClassCell))
-		change24h := h.ChildText(fmt.Sprintf("%s__percent-change-24-h", ClassCell))
-		change7d := h.ChildText(fmt.Sprintf("%s__percent-change-7-d", ClassCell))
+		metrics := commands.GetMetrics(h)
 
 		if len(symbolFilter) > 0 {
 			for _, symbolValue := range symbolFilter {
-				if symbolValue == strings.ToLower(symbol) {
+				if symbolValue == strings.ToLower(metrics.Symbol) {
 					goPrettyTable.AppendRows([]goPretty.Row{
 						{
-							name,
-							symbol,
-							marketCap,
-							price,
-							volume,
-							change1h,
-							change24h,
-							change7d,
+							metrics.Name,
+							metrics.Symbol,
+							metrics.MarketCap,
+							metrics.Price,
+							metrics.Volume,
+							metrics.Change1h,
+							metrics.Change24h,
+							metrics.Change7d,
 						},
 					})
 				}
@@ -46,9 +40,18 @@ func Scrape(symbolFilter []string) {
 			return
 		}
 
-		if name != "" {
+		if metrics.Symbol != "" {
 			goPrettyTable.AppendRows([]goPretty.Row{
-				{name, symbol, marketCap, price, volume, change1h, change24h, change7d},
+				{
+					metrics.Name,
+					metrics.Symbol,
+					metrics.MarketCap,
+					metrics.Price,
+					metrics.Volume,
+					metrics.Change1h,
+					metrics.Change24h,
+					metrics.Change7d,
+				},
 			})
 		}
 	})
@@ -57,7 +60,7 @@ func Scrape(symbolFilter []string) {
 		log.Fatalf("Something went wrong: %v", err)
 	})
 
-	c.Visit(CoinMarketURL)
+	c.Visit(commands.CoinMarketURL)
 
 	fmt.Println(goPrettyTable.Render())
 }

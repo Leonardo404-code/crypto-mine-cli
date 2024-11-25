@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"crypto-mine-cli/cmd/commands"
 )
 
 func createJSONFile() (*os.File, error) {
@@ -12,11 +14,11 @@ func createJSONFile() (*os.File, error) {
 		return nil, err
 	}
 
-	filePath := filepath.Join(downloadFolderPath, JSONFileName)
+	filePath := filepath.Join(downloadFolderPath, commands.JSONFileName)
 
 	file, err := os.Create(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("Cannot create file %q: %s\n", JSONFileName, err)
+		return nil, fmt.Errorf("Cannot create file %q: %s\n", commands.JSONFileName, err)
 	}
 
 	return file, nil
