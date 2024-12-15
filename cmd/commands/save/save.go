@@ -1,22 +1,28 @@
 package save
 
 import (
+	"errors"
 	"log"
 )
 
-func Save(fileType string) {
+func Save(fileType string) error {
 	if fileType != "json" && fileType != "csv" {
-		log.Fatal("error: file type not supported, try json or csv")
-		return
+		return errors.New("file type not supported, try json or csv")
 	}
 
 	if fileType == "json" {
-		saveInJSON()
+		if err := saveInJSON(); err != nil {
+			return err
+		}
 	}
 
 	if fileType == "csv" {
-		saveInCSV()
+		if err := saveInCSV(); err != nil {
+			return err
+		}
 	}
 
 	log.Printf("File persisted in the Downloads folder in %s format", fileType)
+
+	return nil
 }

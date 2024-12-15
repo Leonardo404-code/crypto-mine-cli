@@ -19,7 +19,7 @@ func createCSVFile() (*os.File, *csv.Writer, error) {
 
 	file, err := os.Create(filePath)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Cannot create file %q: %s\n", commands.CSVFileName, err)
+		return nil, nil, fmt.Errorf("cannot create file %q: %s\n", commands.CSVFileName, err)
 	}
 
 	writer := csv.NewWriter(file)

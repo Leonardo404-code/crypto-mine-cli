@@ -2,7 +2,6 @@ package scrape
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"crypto-mine-cli/cmd/commands"
@@ -12,7 +11,7 @@ import (
 	goPretty "github.com/jedib0t/go-pretty/v6/table"
 )
 
-func Scrape(symbolFilter []string) {
+func Scrape(symbolFilter []string) error {
 	goPrettyTable := config.ConfigGoPretty()
 
 	c := colly.NewCollector()
@@ -56,11 +55,21 @@ func Scrape(symbolFilter []string) {
 		}
 	})
 
-	c.OnError(func(_ *colly.Response, err error) {
-		log.Fatalf("Something went wrong: %v", err)
+	var err error
+
+	c.OnError(func(_ *colly.Response, requestErr error) {
+		err = fmt.Errorf("Something went wrong: %v", requestErr)
 	})
 
-	c.Visit(commands.CoinMarketURL)
+	if err != nil {
+		return err
+	}
+
+	if err = c.Visit(commands.CoinMarketURL); err != nil {
+		return err
+	}
 
 	fmt.Println(goPrettyTable.Render())
+
+	return nil
 }

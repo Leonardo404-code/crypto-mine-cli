@@ -15,8 +15,12 @@ var (
 		Long: `Crypto crypto-mine-cli is an application that extracts the
 data of various cryptocurrencies from the Coin Market Cap
 		`,
-		Run: func(cmd *cobra.Command, args []string) {
-			scrape.Scrape(filter)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := scrape.Scrape(filter); err != nil {
+				return err
+			}
+
+			return nil
 		},
 	}
 
@@ -24,8 +28,12 @@ data of various cryptocurrencies from the Coin Market Cap
 		Use:   "save",
 		Short: "Save stores the results in Donwloads folder",
 		Long:  "Save stores the results in Downloads folder, The information from the table is applied to the file of your choice, choose between JSON or CSV with the --type flag (or -t for short)",
-		Run: func(cmd *cobra.Command, args []string) {
-			save.Save(fileType)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := save.Save(fileType); err != nil {
+				return err
+			}
+
+			return nil
 		},
 	}
 

@@ -1,17 +1,17 @@
 package save
 
 import (
-	"log"
+	"fmt"
 
 	"crypto-mine-cli/cmd/commands"
 
 	"github.com/gocolly/colly"
 )
 
-func saveInCSV() {
+func saveInCSV() error {
 	file, writer, err := createCSVFile()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer file.Close()
@@ -47,9 +47,13 @@ func saveInCSV() {
 		})
 	})
 
-	c.OnError(func(_ *colly.Response, err error) {
-		log.Fatalf("Something went wrong: %v", err)
+	c.OnError(func(_ *colly.Response, requestErr error) {
+		err = fmt.Errorf("Something went wrong: %v", requestErr)
 	})
 
-	c.Visit(commands.CoinMarketURL)
+	if err := c.Visit(commands.CoinMarketURL); err != nil {
+		return fmt.Errorf("failed in visit %s", commands.CoinMarketURL)
+	}
+
+	return nil
 }

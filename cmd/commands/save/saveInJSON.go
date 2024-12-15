@@ -2,7 +2,7 @@ package save
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 
 	"crypto-mine-cli/cmd/commands"
 
@@ -20,10 +20,10 @@ type Data struct {
 	Change7d  string `json:"change7d"`
 }
 
-func saveInJSON() {
+func saveInJSON() error {
 	file, err := createJSONFile()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer file.Close()
@@ -51,15 +51,23 @@ func saveInJSON() {
 		}
 	})
 
-	c.OnError(func(_ *colly.Response, err error) {
-		log.Fatalf("Something went wrong: %v", err)
+	c.OnError(func(_ *colly.Response, requestErr error) {
+		err = fmt.Errorf("Something went wrong: %v", requestErr)
 	})
 
-	c.Visit(commands.CoinMarketURL)
+	if err != nil {
+		return err
+	}
+
+	if err := c.Visit(commands.CoinMarketURL); err != nil {
+		return fmt.Errorf("failed in visit %s", commands.CoinMarketURL)
+	}
 
 	fileCreated, _ := json.MarshalIndent(data, "", " ")
 
 	if _, err = file.Write(fileCreated); err != nil {
-		panic(err)
+		return fmt.Errorf("failed in write file data: %v", err)
 	}
+
+	return nil
 }
